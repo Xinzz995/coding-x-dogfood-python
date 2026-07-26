@@ -1,0 +1,397 @@
+{
+  "schemaVersion": 1,
+  "codingXVersion": "0.33.0",
+  "repository": {
+    "provider": "github",
+    "fullName": "Xinzz995/coding-x-dogfood-python",
+    "defaultBranch": "main"
+  },
+  "release": {
+    "protectedRefs": [
+      "v*"
+    ]
+  },
+  "sources": {
+    "specs": [
+      {
+        "kind": "pull-request"
+      }
+    ],
+    "acceptanceCriteria": [
+      {
+        "kind": "pull-request"
+      }
+    ],
+    "engineeringStandards": [
+      "AGENTS.md",
+      "README.md"
+    ]
+  },
+  "modules": [
+    {
+      "id": "packages-api",
+      "path": "packages/api"
+    },
+    {
+      "id": "packages-worker",
+      "path": "packages/worker"
+    }
+  ],
+  "generatedPaths": [],
+  "checks": {
+    "test": {
+      "checks": [
+        {
+          "id": "test-packages-api",
+          "module": "packages-api",
+          "command": {
+            "executable": "python",
+            "args": [
+              "-m",
+              "pytest"
+            ],
+            "cwd": "packages/api",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          }
+        },
+        {
+          "id": "test-packages-worker",
+          "module": "packages-worker",
+          "command": {
+            "executable": "python",
+            "args": [
+              "-m",
+              "pytest"
+            ],
+            "cwd": "packages/worker",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          }
+        }
+      ]
+    },
+    "build": {
+      "checks": [
+        {
+          "id": "build-packages-api",
+          "module": "packages-api",
+          "command": {
+            "executable": "python",
+            "args": [
+              "-m",
+              "pip",
+              "wheel",
+              ".",
+              "--no-deps",
+              "--wheel-dir",
+              "dist"
+            ],
+            "cwd": "packages/api",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          }
+        },
+        {
+          "id": "build-packages-worker",
+          "module": "packages-worker",
+          "command": {
+            "executable": "python",
+            "args": [
+              "-m",
+              "pip",
+              "wheel",
+              ".",
+              "--no-deps",
+              "--wheel-dir",
+              "dist"
+            ],
+            "cwd": "packages/worker",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          }
+        }
+      ]
+    },
+    "static": {
+      "checks": [
+        {
+          "id": "ruff-packages-api",
+          "module": "packages-api",
+          "command": {
+            "executable": "python",
+            "args": [
+              "-m",
+              "ruff",
+              "check",
+              "."
+            ],
+            "cwd": "packages/api",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          }
+        },
+        {
+          "id": "ruff-packages-worker",
+          "module": "packages-worker",
+          "command": {
+            "executable": "python",
+            "args": [
+              "-m",
+              "ruff",
+              "check",
+              "."
+            ],
+            "cwd": "packages/worker",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          }
+        }
+      ]
+    },
+    "security": {
+      "notApplicable": "此公开试点仓库不处理生产数据且没有独立安全扫描器；本次只验证多包原生门禁，后续不得把该不适用结论复用于生产项目。"
+    }
+  },
+  "risk": {
+    "defaultCategories": [
+      "policy",
+      "public-contract",
+      "state",
+      "migration",
+      "recovery",
+      "idempotency",
+      "concurrency",
+      "timeout",
+      "retry",
+      "subprocess",
+      "security",
+      "privacy",
+      "untrusted-input",
+      "cross-module",
+      "large-file",
+      "reviewer-request",
+      "release"
+    ],
+    "highRiskPaths": [
+      ".coding-x/**",
+      ".github/workflows/**"
+    ],
+    "pathRules": [
+      {
+        "paths": [
+          ".coding-x/**",
+          ".github/workflows/**"
+        ],
+        "categories": [
+          "policy",
+          "security"
+        ]
+      }
+    ]
+  },
+  "github": {
+    "jobs": [
+      {
+        "id": "linux-primary",
+        "platform": "linux",
+        "toolchains": [
+          {
+            "kind": "python",
+            "version": "3.12"
+          }
+        ],
+        "setup": [
+          {
+            "executable": "python",
+            "args": [
+              "-m",
+              "pip",
+              "install",
+              "-e",
+              ".[dev]"
+            ],
+            "cwd": "packages/api",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          },
+          {
+            "executable": "python",
+            "args": [
+              "-m",
+              "pip",
+              "install",
+              "-e",
+              ".[dev]"
+            ],
+            "cwd": "packages/worker",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          }
+        ],
+        "checkIds": [
+          "test-packages-api",
+          "test-packages-worker",
+          "build-packages-api",
+          "build-packages-worker",
+          "ruff-packages-api",
+          "ruff-packages-worker"
+        ]
+      },
+      {
+        "id": "macos-primary",
+        "platform": "macos",
+        "toolchains": [
+          {
+            "kind": "python",
+            "version": "3.12"
+          }
+        ],
+        "setup": [
+          {
+            "executable": "python",
+            "args": [
+              "-m",
+              "pip",
+              "install",
+              "-e",
+              ".[dev]"
+            ],
+            "cwd": "packages/api",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          },
+          {
+            "executable": "python",
+            "args": [
+              "-m",
+              "pip",
+              "install",
+              "-e",
+              ".[dev]"
+            ],
+            "cwd": "packages/worker",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          }
+        ],
+        "checkIds": [
+          "test-packages-api",
+          "test-packages-worker",
+          "build-packages-api",
+          "build-packages-worker",
+          "ruff-packages-api",
+          "ruff-packages-worker"
+        ]
+      },
+      {
+        "id": "windows-primary",
+        "platform": "windows",
+        "toolchains": [
+          {
+            "kind": "python",
+            "version": "3.12"
+          }
+        ],
+        "setup": [
+          {
+            "executable": "python",
+            "args": [
+              "-m",
+              "pip",
+              "install",
+              "-e",
+              ".[dev]"
+            ],
+            "cwd": "packages/api",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          },
+          {
+            "executable": "python",
+            "args": [
+              "-m",
+              "pip",
+              "install",
+              "-e",
+              ".[dev]"
+            ],
+            "cwd": "packages/worker",
+            "platforms": [
+              "linux",
+              "macos",
+              "windows"
+            ],
+            "timeoutMs": 600000
+          }
+        ],
+        "checkIds": [
+          "test-packages-api",
+          "test-packages-worker",
+          "build-packages-api",
+          "build-packages-worker",
+          "ruff-packages-api",
+          "ruff-packages-worker"
+        ]
+      }
+    ],
+    "requiredChecks": [
+      "quality-gate",
+      "policy-guard-source"
+    ]
+  },
+  "exceptions": {
+    "p1": {
+      "issueTemplate": ".github/ISSUE_TEMPLATE/quality-p1.yml",
+      "maxDays": 30
+    },
+    "policy": {
+      "issueTemplate": ".github/ISSUE_TEMPLATE/quality-policy.yml",
+      "maxDays": 7
+    }
+  }
+}
