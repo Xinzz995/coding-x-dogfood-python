@@ -15,3 +15,8 @@ def next_nonblank_job(jobs: Sequence[str]) -> str | None:
         if stripped_job:
             return stripped_job
     return None
+
+
+def nonblank_jobs(jobs: Sequence[str]) -> list[str]:
+    """Return trimmed nonblank jobs in their original order."""
+    return [stripped_job for job in jobs if (stripped_job := job.strip())]
