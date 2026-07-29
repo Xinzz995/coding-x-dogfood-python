@@ -34,6 +34,13 @@ def test_nonblank_jobs_filters_trims_preserves_order_and_input() -> None:
     assert jobs == original_jobs
 
 
+def test_nonblank_jobs_accepts_an_immutable_sequence() -> None:
+    jobs = ("  build  ", "", "deploy")
+
+    assert nonblank_jobs(jobs) == ["build", "deploy"]
+    assert jobs == ("  build  ", "", "deploy")
+
+
 def test_nonblank_jobs_handles_empty_input() -> None:
     assert nonblank_jobs([]) == []
 
