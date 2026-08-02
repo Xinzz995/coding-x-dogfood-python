@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "codingXVersion": "0.33.3",
   "repository": {
     "provider": "github",
@@ -37,41 +37,188 @@
       "path": "packages/worker"
     }
   ],
-  "generatedPaths": [],
+  "generatedPaths": [
+    "packages/api/build/**",
+    "packages/api/dist/**",
+    "packages/api/src/coding_x_dogfood_api.egg-info/**",
+    "packages/worker/build/**",
+    "packages/worker/dist/**",
+    "packages/worker/src/coding_x_dogfood_worker.egg-info/**"
+  ],
+  "localValidation": {
+    "prepare": [
+      {
+        "executable": "python3.12",
+        "args": [
+          "-m",
+          "venv",
+          ".venv"
+        ],
+        "cwd": ".",
+        "platforms": [
+          "linux"
+        ],
+        "timeoutMs": 600000
+      },
+      {
+        "executable": ".venv/bin/python",
+        "args": [
+          "-m",
+          "pip",
+          "install",
+          "pip==25.3",
+          "packages/api[dev]",
+          "packages/worker[dev]"
+        ],
+        "cwd": ".",
+        "platforms": [
+          "linux"
+        ],
+        "timeoutMs": 600000
+      },
+      {
+        "executable": "python3.12",
+        "args": [
+          "-m",
+          "venv",
+          ".venv"
+        ],
+        "cwd": ".",
+        "platforms": [
+          "macos"
+        ],
+        "timeoutMs": 600000
+      },
+      {
+        "executable": ".venv/bin/python",
+        "args": [
+          "-m",
+          "pip",
+          "install",
+          "pip==25.3",
+          "packages/api[dev]",
+          "packages/worker[dev]"
+        ],
+        "cwd": ".",
+        "platforms": [
+          "macos"
+        ],
+        "timeoutMs": 600000
+      },
+      {
+        "executable": "python",
+        "args": [
+          "-m",
+          "venv",
+          ".venv"
+        ],
+        "cwd": ".",
+        "platforms": [
+          "windows"
+        ],
+        "timeoutMs": 600000
+      },
+      {
+        "executable": ".venv/Scripts/python.exe",
+        "args": [
+          "-m",
+          "pip",
+          "install",
+          "pip==25.3",
+          "packages/api[dev]",
+          "packages/worker[dev]"
+        ],
+        "cwd": ".",
+        "platforms": [
+          "windows"
+        ],
+        "timeoutMs": 600000
+      }
+    ],
+    "allowedPaths": [
+      ".venv/**"
+    ]
+  },
   "checks": {
     "test": {
       "checks": [
         {
-          "id": "test-packages-api",
+          "id": "test-packages-api-posix",
           "module": "packages-api",
           "command": {
-            "executable": "python",
+            "executable": ".venv/bin/python",
             "args": [
+              "-B",
               "-m",
-              "pytest"
+              "pytest",
+              "-p",
+              "no:cacheprovider",
+              "packages/api/tests"
             ],
-            "cwd": "packages/api",
+            "cwd": ".",
             "platforms": [
               "linux",
-              "macos",
+              "macos"
+            ],
+            "timeoutMs": 600000
+          }
+        },
+        {
+          "id": "test-packages-worker-posix",
+          "module": "packages-worker",
+          "command": {
+            "executable": ".venv/bin/python",
+            "args": [
+              "-B",
+              "-m",
+              "pytest",
+              "-p",
+              "no:cacheprovider",
+              "packages/worker/tests"
+            ],
+            "cwd": ".",
+            "platforms": [
+              "linux",
+              "macos"
+            ],
+            "timeoutMs": 600000
+          }
+        },
+        {
+          "id": "test-packages-api-windows",
+          "module": "packages-api",
+          "command": {
+            "executable": ".venv/Scripts/python.exe",
+            "args": [
+              "-B",
+              "-m",
+              "pytest",
+              "-p",
+              "no:cacheprovider",
+              "packages/api/tests"
+            ],
+            "cwd": ".",
+            "platforms": [
               "windows"
             ],
             "timeoutMs": 600000
           }
         },
         {
-          "id": "test-packages-worker",
+          "id": "test-packages-worker-windows",
           "module": "packages-worker",
           "command": {
-            "executable": "python",
+            "executable": ".venv/Scripts/python.exe",
             "args": [
+              "-B",
               "-m",
-              "pytest"
+              "pytest",
+              "-p",
+              "no:cacheprovider",
+              "packages/worker/tests"
             ],
-            "cwd": "packages/worker",
+            "cwd": ".",
             "platforms": [
-              "linux",
-              "macos",
               "windows"
             ],
             "timeoutMs": 600000
@@ -82,46 +229,86 @@
     "build": {
       "checks": [
         {
-          "id": "build-packages-api",
+          "id": "build-packages-api-posix",
           "module": "packages-api",
           "command": {
-            "executable": "python",
+            "executable": ".venv/bin/python",
             "args": [
               "-m",
               "pip",
               "wheel",
-              ".",
+              "packages/api",
               "--no-deps",
               "--wheel-dir",
-              "dist"
+              "packages/api/dist"
             ],
-            "cwd": "packages/api",
+            "cwd": ".",
             "platforms": [
               "linux",
-              "macos",
+              "macos"
+            ],
+            "timeoutMs": 600000
+          }
+        },
+        {
+          "id": "build-packages-worker-posix",
+          "module": "packages-worker",
+          "command": {
+            "executable": ".venv/bin/python",
+            "args": [
+              "-m",
+              "pip",
+              "wheel",
+              "packages/worker",
+              "--no-deps",
+              "--wheel-dir",
+              "packages/worker/dist"
+            ],
+            "cwd": ".",
+            "platforms": [
+              "linux",
+              "macos"
+            ],
+            "timeoutMs": 600000
+          }
+        },
+        {
+          "id": "build-packages-api-windows",
+          "module": "packages-api",
+          "command": {
+            "executable": ".venv/Scripts/python.exe",
+            "args": [
+              "-m",
+              "pip",
+              "wheel",
+              "packages/api",
+              "--no-deps",
+              "--wheel-dir",
+              "packages/api/dist"
+            ],
+            "cwd": ".",
+            "platforms": [
               "windows"
             ],
             "timeoutMs": 600000
           }
         },
         {
-          "id": "build-packages-worker",
+          "id": "build-packages-worker-windows",
           "module": "packages-worker",
           "command": {
-            "executable": "python",
+            "executable": ".venv/Scripts/python.exe",
             "args": [
               "-m",
               "pip",
               "wheel",
-              ".",
+              "packages/worker",
               "--no-deps",
               "--wheel-dir",
-              "dist"
+              "packages/worker/dist"
             ],
-            "cwd": "packages/worker",
+            "cwd": ".",
             "platforms": [
-              "linux",
-              "macos",
               "windows"
             ],
             "timeoutMs": 600000
@@ -132,40 +319,78 @@
     "static": {
       "checks": [
         {
-          "id": "ruff-packages-api",
+          "id": "ruff-packages-api-posix",
           "module": "packages-api",
           "command": {
-            "executable": "python",
+            "executable": ".venv/bin/python",
             "args": [
               "-m",
               "ruff",
               "check",
-              "."
+              "--no-cache",
+              "packages/api"
             ],
-            "cwd": "packages/api",
+            "cwd": ".",
             "platforms": [
               "linux",
-              "macos",
+              "macos"
+            ],
+            "timeoutMs": 600000
+          }
+        },
+        {
+          "id": "ruff-packages-worker-posix",
+          "module": "packages-worker",
+          "command": {
+            "executable": ".venv/bin/python",
+            "args": [
+              "-m",
+              "ruff",
+              "check",
+              "--no-cache",
+              "packages/worker"
+            ],
+            "cwd": ".",
+            "platforms": [
+              "linux",
+              "macos"
+            ],
+            "timeoutMs": 600000
+          }
+        },
+        {
+          "id": "ruff-packages-api-windows",
+          "module": "packages-api",
+          "command": {
+            "executable": ".venv/Scripts/python.exe",
+            "args": [
+              "-m",
+              "ruff",
+              "check",
+              "--no-cache",
+              "packages/api"
+            ],
+            "cwd": ".",
+            "platforms": [
               "windows"
             ],
             "timeoutMs": 600000
           }
         },
         {
-          "id": "ruff-packages-worker",
+          "id": "ruff-packages-worker-windows",
           "module": "packages-worker",
           "command": {
-            "executable": "python",
+            "executable": ".venv/Scripts/python.exe",
             "args": [
               "-m",
               "ruff",
               "check",
-              "."
+              "--no-cache",
+              "packages/worker"
             ],
-            "cwd": "packages/worker",
+            "cwd": ".",
             "platforms": [
-              "linux",
-              "macos",
               "windows"
             ],
             "timeoutMs": 600000
@@ -230,44 +455,39 @@
             "executable": "python",
             "args": [
               "-m",
-              "pip",
-              "install",
-              "-e",
-              ".[dev]"
+              "venv",
+              ".venv"
             ],
-            "cwd": "packages/api",
+            "cwd": ".",
             "platforms": [
-              "linux",
-              "macos",
-              "windows"
+              "linux"
             ],
             "timeoutMs": 600000
           },
           {
-            "executable": "python",
+            "executable": ".venv/bin/python",
             "args": [
               "-m",
               "pip",
               "install",
-              "-e",
-              ".[dev]"
+              "pip==25.3",
+              "packages/api[dev]",
+              "packages/worker[dev]"
             ],
-            "cwd": "packages/worker",
+            "cwd": ".",
             "platforms": [
-              "linux",
-              "macos",
-              "windows"
+              "linux"
             ],
             "timeoutMs": 600000
           }
         ],
         "checkIds": [
-          "test-packages-api",
-          "test-packages-worker",
-          "build-packages-api",
-          "build-packages-worker",
-          "ruff-packages-api",
-          "ruff-packages-worker"
+          "test-packages-api-posix",
+          "test-packages-worker-posix",
+          "build-packages-api-posix",
+          "build-packages-worker-posix",
+          "ruff-packages-api-posix",
+          "ruff-packages-worker-posix"
         ]
       },
       {
@@ -284,44 +504,39 @@
             "executable": "python",
             "args": [
               "-m",
-              "pip",
-              "install",
-              "-e",
-              ".[dev]"
+              "venv",
+              ".venv"
             ],
-            "cwd": "packages/api",
+            "cwd": ".",
             "platforms": [
-              "linux",
-              "macos",
-              "windows"
+              "macos"
             ],
             "timeoutMs": 600000
           },
           {
-            "executable": "python",
+            "executable": ".venv/bin/python",
             "args": [
               "-m",
               "pip",
               "install",
-              "-e",
-              ".[dev]"
+              "pip==25.3",
+              "packages/api[dev]",
+              "packages/worker[dev]"
             ],
-            "cwd": "packages/worker",
+            "cwd": ".",
             "platforms": [
-              "linux",
-              "macos",
-              "windows"
+              "macos"
             ],
             "timeoutMs": 600000
           }
         ],
         "checkIds": [
-          "test-packages-api",
-          "test-packages-worker",
-          "build-packages-api",
-          "build-packages-worker",
-          "ruff-packages-api",
-          "ruff-packages-worker"
+          "test-packages-api-posix",
+          "test-packages-worker-posix",
+          "build-packages-api-posix",
+          "build-packages-worker-posix",
+          "ruff-packages-api-posix",
+          "ruff-packages-worker-posix"
         ]
       },
       {
@@ -338,44 +553,39 @@
             "executable": "python",
             "args": [
               "-m",
-              "pip",
-              "install",
-              "-e",
-              ".[dev]"
+              "venv",
+              ".venv"
             ],
-            "cwd": "packages/api",
+            "cwd": ".",
             "platforms": [
-              "linux",
-              "macos",
               "windows"
             ],
             "timeoutMs": 600000
           },
           {
-            "executable": "python",
+            "executable": ".venv/Scripts/python.exe",
             "args": [
               "-m",
               "pip",
               "install",
-              "-e",
-              ".[dev]"
+              "pip==25.3",
+              "packages/api[dev]",
+              "packages/worker[dev]"
             ],
-            "cwd": "packages/worker",
+            "cwd": ".",
             "platforms": [
-              "linux",
-              "macos",
               "windows"
             ],
             "timeoutMs": 600000
           }
         ],
         "checkIds": [
-          "test-packages-api",
-          "test-packages-worker",
-          "build-packages-api",
-          "build-packages-worker",
-          "ruff-packages-api",
-          "ruff-packages-worker"
+          "test-packages-api-windows",
+          "test-packages-worker-windows",
+          "build-packages-api-windows",
+          "build-packages-worker-windows",
+          "ruff-packages-api-windows",
+          "ruff-packages-worker-windows"
         ]
       }
     ],
