@@ -17,3 +17,8 @@ def normalize_names(names: Sequence[str]) -> list[str]:
 def normalize_unique_names(names: Sequence[str]) -> list[str]:
     """Return normalized display names without duplicate results."""
     return list(dict.fromkeys(normalize_names(names)))
+
+
+def count_unique_names(names: Sequence[str]) -> int:
+    """Return the number of unique normalized display names."""
+    return len(normalize_unique_names(names))
