@@ -20,3 +20,8 @@ def next_nonblank_job(jobs: Sequence[str]) -> str | None:
 def nonblank_jobs(jobs: Sequence[str]) -> list[str]:
     """Return trimmed nonblank jobs in their original order."""
     return [stripped_job for job in jobs if (stripped_job := job.strip())]
+
+
+def unique_nonblank_jobs(jobs: Sequence[str]) -> list[str]:
+    """Return trimmed nonblank jobs without duplicate results."""
+    return list(dict.fromkeys(nonblank_jobs(jobs)))
