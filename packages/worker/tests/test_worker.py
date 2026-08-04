@@ -1,4 +1,10 @@
-from dogfood_worker import next_job, next_nonblank_job, nonblank_jobs, unique_nonblank_jobs
+from dogfood_worker import (
+    last_nonblank_job,
+    next_job,
+    next_nonblank_job,
+    nonblank_jobs,
+    unique_nonblank_jobs,
+)
 
 
 def test_next_job_returns_first_item() -> None:
@@ -60,3 +66,23 @@ def test_unique_nonblank_jobs_normalizes_deduplicates_and_preserves_input() -> N
 def test_unique_nonblank_jobs_handles_empty_and_all_blank_input() -> None:
     assert unique_nonblank_jobs([]) == []
     assert unique_nonblank_jobs(["", "   ", "\t", "\n"]) == []
+
+
+def test_last_nonblank_job_returns_trimmed_last_match_without_mutating_input() -> None:
+    jobs = ["  build  ", "", " deploy ", "\t", "  test  ", "   "]
+    original_jobs = jobs.copy()
+
+    assert last_nonblank_job(jobs) == "test"
+    assert jobs == original_jobs
+
+
+def test_last_nonblank_job_accepts_an_immutable_sequence() -> None:
+    jobs = ("  build  ", "", " deploy ")
+
+    assert last_nonblank_job(jobs) == "deploy"
+    assert jobs == ("  build  ", "", " deploy ")
+
+
+def test_last_nonblank_job_handles_empty_and_all_blank_input() -> None:
+    assert last_nonblank_job([]) is None
+    assert last_nonblank_job(["", "   ", "\t", "\n"]) is None
