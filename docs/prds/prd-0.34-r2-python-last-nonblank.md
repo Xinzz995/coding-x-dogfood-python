@@ -14,9 +14,9 @@ Python Monorepo 的 Worker 包已经能够取得第一个非空任务、列出�
 公开行为，同时保持两个 Python 包独立安装和 GitHub 原生门禁不变。
 
 候选必须来自 coding-engine `main` 提交
-`d76bea55d7e4e46ab6b540578d890321d67cce65` 的 GitHub Actions 运行 `30881034010`，压缩包
-SHA-256 为 `570b73564cc678040f22ff162cb2911d81f1398785391e77d84341633c18b776`。本轮固定绝对 CLI 为
-`/private/tmp/coding-x-dogfood-0.34-r3.wNlyro/python-install/node_modules/coding-x/dist/cli.js`，正式与 shadow
+`c42e0c266554fc48462108e9e2e972e0632e9a0f` 的 GitHub Actions 运行 `30891402247`，压缩包
+SHA-256 为 `ca081fbd623f234af4befff37c1093a1d3f9ac06172ecf20153ef3657df16007`。本轮固定绝对 CLI 为
+`/private/tmp/coding-x-dogfood-0.34-r4.MP2iUc/python-install/node_modules/coding-x/dist/cli.js`，正式与 shadow
 反例、Developer、Validator 和最终 Review 都不得换用其他入口。
 
 ## Goals
