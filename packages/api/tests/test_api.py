@@ -1,4 +1,9 @@
-from dogfood_api import normalize_name, normalize_names, normalize_unique_names
+from dogfood_api import (
+    normalize_name,
+    normalize_names,
+    normalize_unique_names,
+    normalized_name_counts,
+)
 
 
 def test_normalize_name_strips_whitespace() -> None:
@@ -31,3 +36,19 @@ def test_normalize_unique_names_deduplicates_normalized_results_in_order() -> No
 
 def test_normalize_unique_names_handles_empty_input() -> None:
     assert normalize_unique_names([]) == []
+
+
+def test_normalized_name_counts_uses_existing_rules_and_preserves_input() -> None:
+    names = ["  Ada  ", "Grace", "Ada", "   ", "anonymous", "\tGrace\n"]
+    original_names = names.copy()
+
+    assert normalized_name_counts(names) == {"Ada": 2, "Grace": 2, "anonymous": 2}
+    assert names == original_names
+
+
+def test_normalized_name_counts_accepts_immutable_and_empty_sequences() -> None:
+    names = ("  Grace  ", "", "Grace")
+
+    assert normalized_name_counts(names) == {"Grace": 2, "anonymous": 1}
+    assert names == ("  Grace  ", "", "Grace")
+    assert normalized_name_counts(()) == {}
