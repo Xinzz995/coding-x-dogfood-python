@@ -11,21 +11,16 @@ scope: root
 
 Python Monorepo 的 API 包已经能够规范化单个或多个调用方名称，并能按首次出现顺序去重，
 但调用方若要统计每个规范化名称的出现次数，仍需重复实现相同的规范化和计数逻辑。本任务用
-coding-x 0.34.0 的 R7 固定候选新增这一公开行为，同时保持两个 Python 包独立安装和 GitHub
-原生门禁不变。
-
-候选必须来自 coding-engine `main` 提交
-`61cf32673f1447f15dfd30e34bd611d0e6978c0e` 的 GitHub Actions 运行 `30961444465`，压缩包
-SHA-256 为 `5d5a8ca03112ebc84d01ce6115a36cd4d45dcd15c3cb9bf6255fbb0bf4e0c20a`。本轮固定绝对 CLI 为
-`/private/tmp/coding-x-python-r7.Diw8aE/install.SNV92r/node_modules/coding-x/dist/cli.js`；正式模式拒绝、
-Shadow doctor、Shadow apply-prd、Developer、Validator 和最终 Review 都不得切换入口。
+公开 npm registry 独立安装的 `coding-x@0.34.0` 完成正式验证，同时保持两个 Python 包独立安装
+和 GitHub 原生门禁不变。正式结果必须绑定 PR 最新提交、当前质量契约和公开稳定版本；旧候选、
+旧提交或 Shadow 结果仅能作为历史记录，不能参与当前交付裁决。
 
 ## Goals
 
 - 为 `dogfood_api` 新增统计规范化名称出现次数的公开函数。
 - 复用现有名称规范化语义，并保留首次出现顺序。
 - 保持调用方输入和所有既有公开函数行为不变。
-- 让候选完整经过 Developer、Validator、本地三层 Review 和 Python 原生 CI。
+- 使用公开 `coding-x@0.34.0` 对 PR 最新提交完成正式 Validator、本地三层 Review 和 Python 原生 CI。
 
 ## Non-Goals
 
@@ -33,17 +28,18 @@ Shadow doctor、Shadow apply-prd、Developer、Validator 和最终 Review 都不
 - 不引入持久化、并发、网络、重试或发布行为。
 - 不在 GitHub CI 安装 Node、npm 或 coding-x，也不在 GitHub 调用模型。
 - 不复用 R6 PR #17 的分支、workspace、报告或本地 Review。
-- Shadow 结果不作为正式交付凭证；本 PR 不合并，也不触发 npm staging。
+- 不把旧候选、旧提交或 Shadow 结果作为当前正式交付凭证。
+- 不触发 npm staging 或 coding-x 发布流程。
 
 ## Golden Principles
 
 | 原则 | 适用性与设计裁决 | 验证证据 |
 |---|---|---|
-| 可证伪完成合同 | 适用。验收测试先提交，并因公开函数尚不存在而失败。 | seed 提交、失败测试、候选实现提交。 |
-| 生成方不得自签 | 适用。Developer 只实现，Validator 和三层 Review 独立判断。 | Validator receipt、三份 Review。 |
+| 可证伪完成合同 | 适用。验收测试先提交，并因公开函数尚不存在而失败。 | seed 提交、失败测试、功能实现提交。 |
+| 生成方不得自签 | 适用。Developer 只实现，正式 Validator 和三层 Review 独立判断。 | 当前提交的 Validator receipt、三份 Review。 |
 | 自治与可逆性对称 | 适用。实现只允许修改 API 实现文件，PR 保持开放。 | seed 到实现的文件差异。 |
 | 复用原生执行面 | 适用。项目继续使用 Python、pytest、wheel 与 Ruff。 | 本地检查和 GitHub 三平台总闸。 |
-| 失败与恢复优先 | 适用。候选、版本、提交或检查不一致时停止。 | 正式拒绝、Shadow 退出状态和远程检查。 |
+| 失败与恢复优先 | 适用。公开版本、提交、契约或检查不一致时停止。 | 正式 doctor、当前提交绑定和远程检查。 |
 
 ## User Stories
 
@@ -65,13 +61,25 @@ Shadow doctor、Shadow apply-prd、Developer、Validator 和最终 Review 都不
 ## Verification
 
 - 预置验收测试在 seed 提交上因缺少 `normalized_name_counts` 明确失败。
-- 同一候选绝对 CLI 完成 workspace 初始化、正式模式拒绝、Shadow doctor、Shadow apply-prd、
-  Developer、Validator 和最终三层 Review；三个 Shadow 命令均退出 7。
-- 正式 apply-prd 必须在版本不匹配时退出 2，且不得写入 PRD、状态或进度文件。
-- 核对 `progress.md` 只在既有前缀后追加，并确认所有候选身份均为 R7、没有回落到 R6。
+- 从 `https://registry.npmjs.org` 独立安装精确 `coding-x@0.34.0`，不使用本地压缩包、候选安装或 `npx`。
+- 正式 doctor 确认运行版本和质量契约均为 `0.34.0`，workspace 安全健康且 GitHub 门禁就绪。
+- 使用公开 `0.34.0` 针对 PR 最新提交重新派生 PRD，并顺序完成正式 Validator 与 Spec、工程标准、
+  深度结构三层 Review；提交、PR 正文、Spec 或契约变化后不得复用旧结果。
+- API 与 Worker 两个包分别完成 pytest、wheel 构建和 Ruff 检查。
 - GitHub Linux、macOS、Windows 检查与 `quality-gate` 针对最终提交全部通过。
+
+## 非规范历史记录
+
+本功能曾使用 R7 固定候选在旧提交
+`c5db8354b6144a2cd56e7d47b5484b8f2f0ba47c` 完成 Shadow 验证。该候选来自 coding-engine
+`main` 提交 `61cf32673f1447f15dfd30e34bd611d0e6978c0e` 的 GitHub Actions 运行
+`30961444465`，压缩包 SHA-256 为
+`5d5a8ca03112ebc84d01ce6115a36cd4d45dcd15c3cb9bf6255fbb0bf4e0c20a`。
+
+以上内容只用于追溯候选阶段，不是当前规格、运行入口、验收要求或交付凭证。公开 `0.34.0`、
+PR 最新提交和本节之前的正式 Verification 才构成当前裁决边界。
 
 ## Rollback
 
-若行为或证据不符合验收标准，回退候选生成的 API 实现提交；不得修改预置测试、质量契约、
-工作流或候选身份来取得绿色结果。
+若行为或证据不符合验收标准，通过新提交修复或回退 API 实现；不得修改预置测试、质量契约、
+工作流或复用旧验证结果来取得绿色结果。任何修复提交都必须重新执行正式 Validator 和三层 Review。
