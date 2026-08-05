@@ -25,3 +25,13 @@ def nonblank_jobs(jobs: Sequence[str]) -> list[str]:
 def unique_nonblank_jobs(jobs: Sequence[str]) -> list[str]:
     """Return trimmed nonblank jobs without duplicate results."""
     return list(dict.fromkeys(nonblank_jobs(jobs)))
+
+
+def first_repeated_nonblank_job(jobs: Sequence[str]) -> str | None:
+    """Return the first trimmed nonblank job encountered a second time."""
+    seen_jobs: set[str] = set()
+    for job in nonblank_jobs(jobs):
+        if job in seen_jobs:
+            return job
+        seen_jobs.add(job)
+    return None
