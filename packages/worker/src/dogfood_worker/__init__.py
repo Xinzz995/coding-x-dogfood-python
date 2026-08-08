@@ -35,3 +35,19 @@ def first_repeated_nonblank_job(jobs: Sequence[str]) -> str | None:
             return job
         seen_jobs.add(job)
     return None
+
+
+def repeated_nonblank_jobs(jobs: Sequence[str]) -> list[str]:
+    """Return trimmed nonblank jobs in the order each is first repeated."""
+    seen_jobs: set[str] = set()
+    repeated_jobs: set[str] = set()
+    result: list[str] = []
+
+    for job in nonblank_jobs(jobs):
+        if job not in seen_jobs:
+            seen_jobs.add(job)
+        elif job not in repeated_jobs:
+            repeated_jobs.add(job)
+            result.append(job)
+
+    return result
